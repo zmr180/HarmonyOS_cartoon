@@ -1,0 +1,12 @@
+{
+  "src": [
+    "pages/Index",
+    "pages/Classify",
+    "pages/Collection",
+    "pages/My",
+    "pages/ASearch",
+    "pages/Detail",
+    "pages/ShowChapter",
+    "pages/BMenu"
+  ]
+}
