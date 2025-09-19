@@ -21,6 +21,7 @@ struct ShowChapter {
     name: "",
     cover: ""
   }
+  @State showControls: boolean = false // 控制提示显示状态
 
   async onPageShow() {
     // 获取漫画内容
@@ -48,54 +49,95 @@ struct ShowChapter {
       )
   }
 
-  build() {
-    Column() {
-      Scroll(this.scroller) {
-        Column() {
-          ForEach(this.showChapter.piclist, (item: piclist) => {
-            Image(item.url).width("100%")
-          })
-        }.padding({
-          left: 0,
-          right: 0
-        })
-      }
-      .width("100%")
-      .scrollable(ScrollDirection.Vertical) // 滚动方向：水平
-      .scrollBar(BarState.On) // 滚动条常驻显示
-      .scrollBarColor(Color.Transparent) // 滚动条颜色  (Transparent: 透明)
-      .scrollBarWidth(10) // 滚动条宽度
-      .edgeEffect(EdgeEffect.None)
-      .height("90%")
+  // 切换控制栏显示状态
+  toggleControls() {
+    this.showControls = !this.showControls
+  }
 
-      Row() {
-        Image($r("app.media.back")).width(30).height(30)
-          .onClick(() => {
-            this.Id = this.showChapter.id_last
-            this.onPageShow()
+  build() {
+    Stack({ alignContent: Alignment.TopStart }) {
+      Column() {
+        Scroll(this.scroller) {
+          Column() {
+            ForEach(this.showChapter.piclist, (item: piclist) => {
+              Image(item.url).width("100%")
+            })
+          }.padding({
+            left: 0,
+            right: 0
           })
-        Text(this.showChapter.name).onClick(() => {
-          console.log("漫画中的Bid:"+this.Bid)
-          router.pushUrl({
-            url: "pages/BMenu",
-            params:{
-              Bid:this.Bid
-            }
-          })
+        }
+        .width("100%")
+        .scrollable(ScrollDirection.Vertical)
+        .scrollBar(BarState.On)
+        .scrollBarColor(Color.Transparent)
+        .scrollBarWidth(10)
+        .edgeEffect(EdgeEffect.None)
+        .height("100%")
+        .onClick(() => {
+          this.toggleControls()
         })
-        Image($r("app.media.next")).width(30).height(30)
-          .onClick(() => {
-            this.Id = this.showChapter.id_next
-            this.onPageShow()
-          })
       }
       .width("100%")
-      .height("10%")
-      .justifyContent(FlexAlign.SpaceBetween)
-      .padding({
-        left: 10,
-        right: 10
-      })
+      .height("100%")
+
+      // 顶部返回按钮（点击屏幕后显示）
+      if (this.showControls) {
+        Row() {
+          Image($r("app.media.back"))
+            .width(30)
+            .height(30)
+            .onClick(() => {
+              router.back()
+            })
+          
+          Text("返回")
+            .fontSize(16)
+            .fontColor(Color.Black)
+            .margin({ left: 8 })
+        }
+        .width("100%")
+        .backgroundColor('#ffffff')
+        .padding({ left: 10, right: 10, top: 10, bottom: 10 })
+      }
+
+      // 底部控制栏（点击屏幕后显示）
+      if (this.showControls) {
+        Row() {
+          Image($r("app.media.back")).width(30).height(30)
+            .onClick(() => {
+              this.Id = this.showChapter.id_last
+              this.onPageShow()
+            })
+          Text(this.showChapter.name).onClick(() => {
+            console.log("漫画中的Bid:"+this.Bid)
+            router.pushUrl({
+              url: "pages/BMenu",
+              params:{
+                Bid:this.Bid
+              }
+            })
+          })
+          Image($r("app.media.next")).width(30).height(30)
+            .onClick(() => {
+              this.Id = this.showChapter.id_next
+              this.onPageShow()
+            })
+        }
+        .width("100%")
+        .height(60)
+        .justifyContent(FlexAlign.SpaceBetween)
+        .padding({
+          left: 20,
+          right: 20
+        })
+        .backgroundColor('#ffffff')
+        .position({ x: 0, y: '100%' })
+        .translate({ y: -60 })
+      }
     }
+    .width("100%")
+    .height("100%")
+    .backgroundColor(Color.Black)
   }
 }
